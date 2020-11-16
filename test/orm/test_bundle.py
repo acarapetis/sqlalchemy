@@ -168,6 +168,17 @@ class BundleTest(fixtures.MappedTest, AssertsCompiledSQL):
             [(("d3d1", "d3d2"),), (("d4d1", "d4d2"),), (("d5d1", "d5d2"),)],
         )
 
+    def test_labelled_cols(self):
+        Data = self.classes.Data
+        sess = Session()
+
+        b1 = Bundle("b1", Data.d1.label('x'), Data.d2.label('y'))
+
+        eq_(
+            sess.query(b1).filter(b1.c.x.between("d3d1", "d5d1")).all(),
+            [(("d3d1", "d3d2"),), (("d4d1", "d4d2"),), (("d5d1", "d5d2"),)],
+        )
+
     def test_subclass(self):
         Data = self.classes.Data
         sess = Session()
